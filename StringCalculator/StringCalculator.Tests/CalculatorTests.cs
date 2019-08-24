@@ -64,6 +64,26 @@ namespace StringCalculator.Tests
         }
 
         [TestMethod]
+        public void Test3Number_invalid()
+        {
+            string testCase = "5,tytyt5,5";
+
+            int result = _calculator.Calculate(testCase);
+
+            Assert.AreEqual(10, result);
+        }
+
+        [TestMethod]
+        public void Test3Number_invalid_2()
+        {
+            string testCase = "5,5,ty5";
+
+            int result = _calculator.Calculate(testCase);
+
+            Assert.AreEqual(10, result);
+        }
+
+        [TestMethod]
         public void Test3Number_2()
         {
             string testCase1 = "5,tytyt,123";
@@ -252,6 +272,17 @@ namespace StringCalculator.Tests
             int result = _calculator.Calculate(testCase1);
 
             Assert.AreEqual(57, result);
+        }
+
+
+        [TestMethod]
+        public void Test2Number_CustomDelimiter_6()
+        {
+            string testCase1 = "//\t\n2\t5\t5";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(12, result);
         }
     }
 }
