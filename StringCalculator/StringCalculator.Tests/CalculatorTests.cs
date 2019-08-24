@@ -1,3 +1,4 @@
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace StringCalculator.Tests
@@ -110,6 +111,46 @@ namespace StringCalculator.Tests
             int result = _calculator.Calculate(testCase1);
 
             Assert.AreEqual(270, result);
+        }
+
+        [TestMethod]
+        public void Test10Number_n_3DoubleDelimiter()
+        {
+            string testCase1 = "5,tytyt\n\n123,1,01,123,123e,1,7,9,fredadc";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(270, result);
+        }
+
+        [TestMethod]
+        public void Test10Number_4DNegative()
+        {
+            try
+            {
+                string testCase1 = "5,tytyt\n\n123,1,01,-123,123e,1,-7,9,-fredadc,-34";
+
+                int result = _calculator.Calculate(testCase1);
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.AreEqual("-123,-7,-34", ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public void Test10Number_4DNegative2()
+        {
+            try
+            {
+                string testCase1 = "5,tytyt\n\n123,1,01,-123,123e,-11,-7,9,-fredadc";
+
+                int result = _calculator.Calculate(testCase1);
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.AreEqual("-123,-11,-7", ex.Message);
+            }
         }
     }
 }
