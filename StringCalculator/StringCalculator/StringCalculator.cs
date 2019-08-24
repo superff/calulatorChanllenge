@@ -12,7 +12,6 @@ namespace StringCalculator
         {
             int result = 0;
             int number = 0;
-            int counts = 1;
             for(int i = 0; i < stringInput.Length; i++)
             {
                 char letter = stringInput[i];
@@ -21,12 +20,6 @@ namespace StringCalculator
                 {
                     result += number;
                     number = 0;
-                    counts++;
-
-                    if(counts > 2)
-                    {
-                        return result;
-                    }
                 }
                 if (char.IsDigit(letter))
                 {
