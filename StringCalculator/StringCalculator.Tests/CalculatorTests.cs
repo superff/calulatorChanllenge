@@ -204,5 +204,54 @@ namespace StringCalculator.Tests
             Assert.AreEqual(8, result);
         }
 
+        [TestMethod]
+        public void Test2Number_CustomDelimiter()
+        {
+            string testCase1 = "//;\n2;5";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(7, result);
+        }
+
+        [TestMethod]
+        public void Test2Number_CustomDelimiter_2()
+        {
+            string testCase1 = "//;\n2;5;";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(7, result);
+        }
+
+        [TestMethod]
+        public void Test2Number_CustomDelimiter_3()
+        {
+            string testCase1 = "//;\n2;5;10;3";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(20, result);
+        }
+
+        [TestMethod]
+        public void Test2Number_CustomDelimiter_4()
+        {
+            string testCase1 = "//?\n2;5;";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(0, result);
+        }
+
+        [TestMethod]
+        public void Test2Number_CustomDelimiter_5()
+        {
+            string testCase1 = "//?\n2?5;?35?20";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(57, result);
+        }
     }
 }
