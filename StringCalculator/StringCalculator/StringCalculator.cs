@@ -9,13 +9,22 @@ namespace StringCalculator
     /// String Calculator
     /// </summary>
     public class StringCalculator
-        :ICalculator
+        : ICalculator
     {
         private const int topLimit = 1000;
+        private HashSet<char> delimiters;
 
         public StringCalculator()
         {
+            delimiters = new HashSet<char>();
+            delimiters.Add(',');
+            delimiters.Add('\n');
         }
+
+        /// <summary>
+        /// Allow negative number or not
+        /// </summary>
+        public bool AllowNegative { get; set; } = false;
 
         /// <summary>
         /// Calculate the sum of the input string
@@ -24,23 +33,36 @@ namespace StringCalculator
         /// <returns></returns>
         public int Calculate(string stringInput)
         {
+            if (string.IsNullOrEmpty(stringInput))
+            {
+                return 0;
+            }
+
             int result = 0;
             int number = 0;
             bool isNegative = false;
             bool isGreaterThanTop = false;
-            List<int> negativeNumbers = new List<int>();
-            StringBuilder sb = new StringBuilder();
+            var negativeNumbers = new List<int>();
+            var sb = new StringBuilder();
 
-            for(int i = 0; i < stringInput.Length; i++)
+            // get the customs delimiter
+            int startIndex = 0;
+            if (containsCustomDelimiters(stringInput))
+            {
+                delimiters.Add(stringInput[2]);
+                startIndex = 4;
+            }
+
+            for (int i = startIndex; i < stringInput.Length; i++)
             {
                 char letter = stringInput[i];
 
                 // check delimiter first
-                if(IsDelimiter(letter))
+                if (IsDelimiter(letter))
                 {
                     result += number;
 
-                    if(number < 0)
+                    if (number < 0)
                     {
                         negativeNumbers.Add(number);
                     }
@@ -48,18 +70,18 @@ namespace StringCalculator
                     sb.Append($"{number}+");
 
                     // reset
-                    isNegative = false; 
+                    isNegative = false;
                     number = 0;
                     isGreaterThanTop = false;
                 }
                 //negative number
-                else if(letter == '-')
+                else if (letter == '-')
                 {
                     isNegative = true;
                 }
                 else if (char.IsDigit(letter))
                 {
-                    if(isGreaterThanTop)
+                    if (isGreaterThanTop)
                     {
                         continue;
                     }
@@ -75,14 +97,14 @@ namespace StringCalculator
 
 
                     // first negative numbers
-                    if(isNegative && number != 0) 
+                    if (isNegative && number != 0)
                     {
                         number = 0 - number;
                         isNegative = false;
                     }
 
                     // check number is greater than top
-                    if(number > topLimit)
+                    if (number > topLimit)
                     {
                         isGreaterThanTop = true;
                         number = 0;
@@ -96,14 +118,14 @@ namespace StringCalculator
             }
 
             // the last number
-            if(number <0)
+            if (number < 0)
             {
                 negativeNumbers.Add(number);
             }
 
-            if(negativeNumbers.Count != 0)
+            if (negativeNumbers.Count != 0 && !AllowNegative)
             {
-                throw new ArgumentException(string.Join(",",negativeNumbers));
+                throw new ArgumentException(string.Join(",", negativeNumbers));
             }
 
             var finalResult = result + number;
@@ -115,7 +137,14 @@ namespace StringCalculator
 
         public bool IsDelimiter(char letter)
         {
-            return letter == ',' || letter =='\n';
+            return delimiters.Contains(letter);
+        }
+
+        public bool containsCustomDelimiters(string str)
+        {
+            return str.Length > 4
+                && str.Substring(0, 2) == "//"
+                && str[3] == '\n';
         }
     }
 }
