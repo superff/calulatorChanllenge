@@ -12,11 +12,12 @@ namespace StringCalculator
         {
             int result = 0;
             int number = 0;
+            char previousletter = '0';
             for(int i = 0; i < stringInput.Length; i++)
             {
                 char letter = stringInput[i];
 
-                if(letter == ',')
+                if(IsDelimiter($"{previousletter}{letter}"))
                 {
                     result += number;
                     number = 0;
@@ -29,9 +30,16 @@ namespace StringCalculator
                 {
                     number = 0;
                 }
+
+                previousletter = letter;
             }
 
             return result + number;
+        }
+
+        public bool IsDelimiter(string str)
+        {
+            return str[str.Length -1] == ',' || str == "\n";
         }
     }
 }
