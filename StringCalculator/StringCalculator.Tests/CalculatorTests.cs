@@ -81,5 +81,35 @@ namespace StringCalculator.Tests
 
             Assert.AreEqual(270, result);
         }
+
+        [TestMethod]
+        public void Test10Number_1DoubleDelimiter()
+        {
+            string testCase1 = "5,tytyt,123,1,01,123,1,7,9,,,fredadc";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(270, result);
+        }
+
+        [TestMethod]
+        public void Test10Number_n_2()
+        {
+            string testCase1 = "5,tytyt\n123,1,01,123,1,7,9,fredadc";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(270, result);
+        }
+
+        [TestMethod]
+        public void Test10Number_n_2DoubleDelimiter()
+        {
+            string testCase1 = "5,tytyt\n\n123,1,01,123,1,7,9,fredadc";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(270, result);
+        }
     }
 }
