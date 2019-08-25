@@ -15,16 +15,21 @@ namespace StringCalculator
         private bool hasSpecialChar;
         private bool isGreaterThanTop;
         private List<int> negativeNumbers;
-        private HashSet<char> delimiters;
-        private StringBuilder sb;
+        private HashSet<string> delimiters;
+        private StringBuilder outputStringBuilder;
+        private StringBuilder unknownChars;
 
         public StringCalculator()
         {
-            delimiters = new HashSet<char>();
-            delimiters.Add(',');
-            delimiters.Add('\n');
+            delimiters = new HashSet<string>
+            {
+                ",",
+                "\n"
+            };
+
             negativeNumbers = new List<int>();
-            sb = new StringBuilder();
+            outputStringBuilder = new StringBuilder();
+            unknownChars = new StringBuilder();
         }
 
         /// <summary>
@@ -48,32 +53,43 @@ namespace StringCalculator
             int result = 0;
             int number = 0;
 
-            int startIndex = GetNewIndexAndFetchDelimiter(stringInput);
+            int startIndex = GetStartIndexAndFetchDelimiter(stringInput);
 
             for (int i = startIndex; i < stringInput.Length; i++)
             {
+              
                 char letter = stringInput[i];
+                unknownChars.Append(letter);
 
                 // check delimiter first
-                if (IsDelimiter(letter))
+                if (IsDelimiter(unknownChars.ToString(),ref number))
                 {
                     CalculateResult(ref result, ref number);
+                    unknownChars.Clear();
                 }
                 //negative number
                 else if (letter == '-')
                 {
                     isNegative = true;
+                    unknownChars.Clear();
                 }
                 else if (char.IsDigit(letter))
                 {
+                    // check if special char is in the delimter
+                    if(unknownChars.Length > 1)
+                    {
+                        hasSpecialChar = true;
+                    }
+
                     GetCurrentNumber(ref number, letter);
+                    unknownChars.Clear();
                 }
-                // for special chars
-                else
-                {
-                    hasSpecialChar = true;
-                    number = 0;
-                }
+            }
+
+            if(unknownChars.Length != 0)
+            {
+                hasSpecialChar = true;
+                number = 0;
             }
 
             return CalculateFinalResult(ref result, number);
@@ -84,38 +100,86 @@ namespace StringCalculator
         /// </summary>
         /// <param name="stringInput"></param>
         /// <returns>the start index of string to calculate</returns>
-        private int GetNewIndexAndFetchDelimiter(string stringInput)
+        private int GetStartIndexAndFetchDelimiter(string stringInput)
         {
             // get the customs delimiter
             int startIndex = 0;
-            if (ContainsCustomDelimiters(stringInput))
+
+            if(stringInput.Length >= 3
+                && stringInput.Substring(0, 2) == "//")
             {
-                delimiters.Add(stringInput[2]);
-                startIndex = 4;
+                if(stringInput[2] == '[')
+                {
+                    int delimiterEndIndex = 3, delimiterStartIndex= 3;
+
+                    while (delimiterEndIndex < stringInput.Length)
+                    {
+                        if(stringInput[delimiterEndIndex] != ']')
+                        {
+                            delimiterEndIndex++;
+                        }
+                        else
+                        {
+                            // no closing ] and \n found
+                            if(delimiterEndIndex + 1 == stringInput.Length || stringInput[delimiterEndIndex + 1] != '\n')
+                            {
+                                return startIndex;
+                            }
+
+                            if(delimiterStartIndex < delimiterEndIndex)
+                            {
+                                delimiters.Add(
+                                    stringInput.Substring(
+                                        delimiterStartIndex, delimiterEndIndex - delimiterStartIndex));
+
+                                // because "]\n" will be the next two chars 
+                                return delimiterEndIndex + 2;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (stringInput[2] == '\n')
+                    {
+                        startIndex = 3;
+                        return startIndex;
+                    }
+
+                    if (stringInput[3] == '\n')
+                    {
+                        delimiters.Add(stringInput[2].ToString());
+                        startIndex = 4;
+                        return startIndex;
+                    }
+                }
             }
 
             return startIndex;
         }
 
-        public bool IsDelimiter(char letter)
+        public bool IsDelimiter(string str,ref int number)
         {
-            return delimiters.Contains(letter);
-        }
+            if(delimiters.Contains(str))
+            {
+                return true;
+            }
 
-        public bool ContainsCustomDelimiters(string str)
-        {
-            return str.Length > 4
-                && str.Substring(0, 2) == "//"
-                && str[3] == '\n';
+            // need to check substring , for example "t***"
+            for(int i = 1; i < str.Length; i++)
+            {
+                if (delimiters.Contains(str.Substring(i)))
+                {
+                    number = 0;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void CalculateResult(ref int result, ref int number)
         {
-            if (hasSpecialChar)
-            {
-                number = 0;
-            }
-
             result += number;
 
             if (number < 0)
@@ -123,7 +187,7 @@ namespace StringCalculator
                 negativeNumbers.Add(number);
             }
 
-            sb.Append($"{number}+");
+            outputStringBuilder.Append($"{number}+");
 
             // reset
             isNegative = false;
@@ -136,6 +200,7 @@ namespace StringCalculator
         {
             if (isGreaterThanTop || hasSpecialChar)
             {
+                number = 0;
                 return;
             }
 
@@ -177,8 +242,8 @@ namespace StringCalculator
             }
 
             var finalResult = result + number;
-            sb.Append($"{number}={finalResult}");
-            Console.WriteLine(sb);
+            outputStringBuilder.Append($"{number}={finalResult}");
+            Console.WriteLine(outputStringBuilder);
             return finalResult;
         }
     }
