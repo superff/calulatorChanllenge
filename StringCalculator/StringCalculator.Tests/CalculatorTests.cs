@@ -144,6 +144,16 @@ namespace StringCalculator.Tests
         }
 
         [TestMethod]
+        public void Test10Number_n_3()
+        {
+            string testCase1 = "5,tytyt\n123,1,01,123,1,7,9,3c";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(270, result);
+        }
+
+        [TestMethod]
         public void Test10Number_n_2DoubleDelimiter()
         {
             string testCase1 = "5,tytyt\n\n123,1,01,123,1,7,9,fredadc";
@@ -225,6 +235,16 @@ namespace StringCalculator.Tests
         }
 
         [TestMethod]
+        public void Test3Number_n_TopLimit_1001_end()
+        {
+            string testCase1 = "2,6,1001";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(8, result);
+        }
+
+        [TestMethod]
         public void Test2Number_CustomDelimiter()
         {
             string testCase1 = "//;\n2;5";
@@ -283,6 +303,85 @@ namespace StringCalculator.Tests
             int result = _calculator.Calculate(testCase1);
 
             Assert.AreEqual(12, result);
+        }
+
+
+        [TestMethod]
+        public void Test2Number_CustomDelimiter_None()
+        {
+            string testCase1 = "//\n2,5,5";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(12, result);
+        }
+
+        [TestMethod]
+        public void Test3Number_CustomDelimiters_Any()
+        {
+            string testCase1 = "//[***]\n11***22***33";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(66, result);
+        }
+
+        [TestMethod]
+        public void Test3Number_CustomDelimiters_Any_Speacial()
+        {
+            string testCase1 = "//[***]\n11t***22***33";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(55, result);
+        }
+
+        [TestMethod]
+        public void Test3Number_CustomDelimiters_Any_Speacial_2()
+        {
+            string testCase1 = "//[***]\n11t***22***3t3";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(22, result);
+        }
+
+        [TestMethod]
+        public void Test3Number_CustomDelimiters_Any_Speacial_3()
+        {
+            string testCase1 = "//[***]\n11t***22***33t";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(22, result);
+        }
+
+        [TestMethod]
+        public void Test3Number_CustomDelimiters_2_Any()
+        {
+            string testCase1 = "//[!!]\n11t!!22!!!33t";
+
+            int result = _calculator.Calculate(testCase1);
+
+            Assert.AreEqual(22, result);
+        }
+
+        [TestMethod]
+        public void Test3Number_CustomDelimiters_3_Any()
+        {
+            string testCase1 = "//[!!]\n11!!22!!33!2";
+
+            int result = _calculator.Calculate(testCase1);
+            Assert.AreEqual(33, result);
+        }
+
+        [TestMethod]
+        public void Test3Number_CustomDelimiters_4_Any()
+        {
+            string testCase1 = "//[abc]\n11abc22abc33,33\n1abc1efg";
+
+            int result = _calculator.Calculate(testCase1);
+            Assert.AreEqual(100, result);
         }
     }
 }
