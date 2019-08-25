@@ -120,26 +120,42 @@ namespace StringCalculator
                         }
                         else
                         {
-                            // no closing ] and \n found
-                            if(delimiterEndIndex + 1 == stringInput.Length || stringInput[delimiterEndIndex + 1] != '\n')
+                            // no \n found
+                            if(delimiterEndIndex + 1 == stringInput.Length)
                             {
-                                return startIndex;
+                                throw new ArgumentException("\\n is missing");
                             }
 
+                            // skip empty []
                             if(delimiterStartIndex < delimiterEndIndex)
                             {
                                 delimiters.Add(
                                     stringInput.Substring(
                                         delimiterStartIndex, delimiterEndIndex - delimiterStartIndex));
+                            }
 
-                                // because "]\n" will be the next two chars 
+                            // fetch next delimiter
+                            if (stringInput[delimiterEndIndex + 1] == '[')
+                            {
+                                delimiterEndIndex += 2;
+                                delimiterStartIndex = delimiterEndIndex;
+                                continue;
+                            }
+
+                            // end of custom delimters
+                            if (stringInput[delimiterEndIndex + 1] == '\n')
+                            {
+                                // end of customs delimiter
                                 return delimiterEndIndex + 2;
                             }
+
+                            throw new ArgumentException("\\n is missing");
                         }
                     }
                 }
                 else
                 {
+                    // for this case //\n
                     if (stringInput[2] == '\n')
                     {
                         startIndex = 3;
@@ -153,6 +169,8 @@ namespace StringCalculator
                         return startIndex;
                     }
                 }
+
+                throw new ArgumentException("no closing ]");
             }
 
             return startIndex;
@@ -204,20 +222,11 @@ namespace StringCalculator
                 return;
             }
 
-            if (number >= 0)
-            {
-                number = number * 10 + (letter - '0');
-            }
-            else
-            {
-                number = number * 10 - (letter - '0');
-            }
+            number = Math.Abs(number) * 10 + (letter - '0');
 
-            // first negative numbers
-            if (isNegative && number != 0)
+            if (isNegative)
             {
                 number = 0 - number;
-                isNegative = false;
             }
 
             // check number is greater than top

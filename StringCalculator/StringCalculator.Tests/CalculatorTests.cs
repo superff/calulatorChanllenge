@@ -383,5 +383,95 @@ namespace StringCalculator.Tests
             int result = _calculator.Calculate(testCase1);
             Assert.AreEqual(100, result);
         }
+
+        [TestMethod]
+        public void TestMultipleDelimiters()
+        {
+            string testCase1 = "//[*][!!][rrr]\n11rrr22*33!!44";
+
+            int result = _calculator.Calculate(testCase1);
+            Assert.AreEqual(110, result);
+        }
+
+        [TestMethod]
+        public void TestMultipleDelimiters_2()
+        {
+            string testCase1 = "//[*][!!][rrr][]\n11rrr22*33!!44";
+
+            int result = _calculator.Calculate(testCase1);
+            Assert.AreEqual(110, result);
+        }
+
+        [TestMethod]
+        public void TestMultipleDelimiters_3()
+        {
+            string testCase1 = "//[*][!!][rrr][]\n";
+
+            int result = _calculator.Calculate(testCase1);
+            Assert.AreEqual(0, result);
+        }
+
+        [TestMethod]
+        public void TestMultipleDelimiters_4()
+        {
+            string testCase1 = "//[*][!!][rrr][]\n456";
+
+            int result = _calculator.Calculate(testCase1);
+            Assert.AreEqual(456, result);
+        }
+
+        [TestMethod]
+        public void TestMultipleDelimiters_5()
+        {
+            string testCase1 = "//[*][!!][rrr][ ]\n45,45\n4*6!!50rrr50 100";
+
+            int result = _calculator.Calculate(testCase1);
+            Assert.AreEqual(300, result);
+        }
+
+        [TestMethod]
+        public void TestMultipleDelimiters_Exception()
+        {
+            try
+            {
+                string testCase1 = "//[*][!!][rrr][\n11rrr22*33!!44";
+
+                int result = _calculator.Calculate(testCase1);
+            }
+            catch(Exception ex)
+            {
+                Assert.AreEqual("no closing ]", ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public void TestMultipleDelimiters_Exception2()
+        {
+            try
+            {
+                string testCase1 = "//[*][!!][rrr]";
+                int result = _calculator.Calculate(testCase1);
+                Assert.AreEqual(0, result);
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual("\\n is missing", ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public void TestMultipleDelimiters_Exception3()
+        {
+            try
+            {
+                string testCase1 = "//[*][!!][rrr]234*134";
+                int result = _calculator.Calculate(testCase1);
+                Assert.AreEqual(0, result);
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual("\\n is missing", ex.Message);
+            }
+        }
     }
 }
