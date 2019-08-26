@@ -15,9 +15,23 @@ namespace StringCalculator
             Console.CancelKeyPress += cancelHandler;
             Console.WriteLine("Enter String To Calulate");
             Console.WriteLine("press CTRL+C to end:");
+
+            ConsoleKeyInfo cki = new ConsoleKeyInfo();
+
             while (run)
             {
-                sb.AppendLine(Console.ReadLine());
+                cki = Console.ReadKey(true);
+
+                if (cki.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine();
+                    sb.Append('\n');
+                }
+                else
+                {
+                    Console.Write(cki.KeyChar);
+                    sb.Append(cki.KeyChar);
+                }
             }
         }
 
