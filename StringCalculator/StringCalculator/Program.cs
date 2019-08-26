@@ -23,10 +23,17 @@ namespace StringCalculator
 
         protected static void cancelHandler(object sender, ConsoleCancelEventArgs args)
         {
-            run = false;
-
-            // calculate the string input
-            calculator.Calculate(sb.ToString());
+            try
+            {
+                run = false;
+                Console.WriteLine();
+                // calculate the string input
+                calculator.Calculate(sb.ToString());
+            }
+            catch(Exception Ex)
+            {
+                Console.WriteLine(Ex.Message);
+            }
         }
     }
 }
